@@ -11,8 +11,13 @@ namespace Dal.Entities
     public class DocumentFiles
     {
         public int DocumentFileID { get; set; }
-        public IFormFile Document { get; set; }
+        public string DocumentName { get; set; }
+        public long FileSize { get; set; }
+        public string FileFormat { get; set; }
+
         public DateTime UploadDate { get; set; }
         public string FileLink{ get; set; }
+        public int OrderID { get; set; }
     }
+
 }

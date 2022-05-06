@@ -1,4 +1,5 @@
 ﻿using Dal.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,8 @@ namespace Dal
     public class Dalc : IDalc
     {
 
-        public Dalc()
-        {
 
-        }
+
         public List<CustomerAccounts> GetCustomerAccounts()
         {
             List<CustomerAccounts>? listEmployees = null;
@@ -206,22 +205,80 @@ namespace Dal
                 con.Close();
             }
         }
-    
-        
+
+
         public bool AddFile(DocumentFiles file)
         {
             SqlParameter[] param = new SqlParameter[]
             {
-                //new SqlParameter("@DocumentFileID" , document.DocumentFileID), should be added auto
-                new SqlParameter("@DocumentFileName" ,file.Document.FileName),
+                new SqlParameter("@DocumentFileName" ,file.DocumentName),
                 new SqlParameter("@UploadDate", file.UploadDate),
-                new SqlParameter("@FileSize", file.Document.Length.ToString()),
-                new SqlParameter("@FileFormat" , file.Document.ContentType),
-                new SqlParameter("@FileLink" , file.FileLink)
+                new SqlParameter("@FileSize", file.FileSize),
+                new SqlParameter("@FileFormat" , file.FileFormat),
+                new SqlParameter("@FileLink" , file.FileLink),
+                new SqlParameter("@OrderID" , file.OrderID),
             };
             return SqlDBHelper.ExecuteNonQuery("AddDocumentFiles", CommandType.StoredProcedure, param);
-            
+
         }
+
+        public List<DocumentFiles> GetFiles()
+        {
+            List<DocumentFiles>? files = null;
+
+
+            using (DataTable table = SqlDBHelper.ExecuteSelectCommand("GetDocumentFiles", CommandType.StoredProcedure))
+            {
+                //check if any record exist or not
+                if (table.Rows.Count > 0)
+                {
+                    //Lets go ahead and create the list of employees
+                    files = new List<DocumentFiles>();
+
+                    //Now lets populate the employee details into the list of employees
+                    foreach (DataRow row in table.Rows)
+                    {
+
+                        DocumentFiles file = new();
+                        file.DocumentFileID = Convert.ToInt32(row["DocumentFileID"]);
+                        file.UploadDate = Convert.ToDateTime(row["UploadDate"]);
+                        file.FileLink = row["FileLink"].ToString();
+                        file.DocumentName = row["DocumentFileName"].ToString();
+                        file.FileFormat = row["FileFormat"].ToString();
+                        file.FileSize = Convert.ToInt32(row["FileSize"]);
+                        file.OrderID = Convert.ToInt32(row["OrderID"]);
+
+
+
+
+                        files.Add(file);
+                    }
+                    
+                }
+                return files;
+            }
+        }
+
+                public bool AddOrder(PrintOrders order)
+                {
+                    SqlParameter[] param = new SqlParameter[]
+                    {
+                        new SqlParameter("@isBlack", order.isBlack),
+                        new SqlParameter("@isHightQuality", order.isHighQuality),
+                        new SqlParameter("@isBorderless", order.isBorderless),
+                        new SqlParameter("@isDoubleSide", order.isDoubleSide),
+                        new SqlParameter("@PaperType", order.PaperType),
+                        new SqlParameter("@OrderStatus", order.OrderStatus),
+                        new SqlParameter("@WhoOrdered", order.whoOrderedID),
+                        new SqlParameter("@OrderedDateTime", order.OrderedDateTime),
+                        new SqlParameter("@price", order.Price),
+                        new SqlParameter("@size", order.Size),
+                    };
+                    return SqlDBHelper.ExecuteNonQuery("AddPrintOrders", CommandType.StoredProcedure, param);
+
+                }
+
+            
         
     }
 }

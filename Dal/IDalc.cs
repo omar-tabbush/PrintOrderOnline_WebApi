@@ -18,6 +18,9 @@ namespace Dal
         public bool DeleteCustomerAccountByID(Int32 id);
         public bool userlogin(string user, string passw);
         public bool AddFile(DocumentFiles document);
+        public List<DocumentFiles> GetFiles();
+
+        public bool AddOrder(PrintOrders order);
 
 
     }

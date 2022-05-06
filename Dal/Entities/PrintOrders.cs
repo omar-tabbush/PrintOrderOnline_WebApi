@@ -14,12 +14,12 @@ namespace Dal.Entities
         public bool isHighQuality { get; set; }
         public bool isBorderless { get; set; }
         public string Size { get; set; }
-        public bool isDoubleSide { get; set; }
-        public string PaperType { get; set; }
+        public bool? isDoubleSide { get; set; }
+        public string? PaperType { get; set; }
         public string OrderStatus { get; set; }
         public int Price { get; set; }
         public DateTime OrderedDateTime { get; set; }
-        public CustomerAccounts whoOrdered { get; set; }
-        public List<DocumentFiles> whatOrdered { get; set; }
+        public int whoOrderedID { get; set; }
+       // public virtual CustomerAccounts? whoOrdered { get; set; }
     }
 }

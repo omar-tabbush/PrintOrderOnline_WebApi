@@ -22,19 +22,17 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet(Name = "Get-All-Customers")]
-        public List<CustomerAccounts> GetCustomersAccounts()
+        public async Task<List<CustomerAccounts>> GetCustomersAccounts()
         {
             Blc blc = new Blc();
-            return blc.BL_GetCustomerAccounts();
+            return await blc.BL_GetCustomerAccounts();
         }
 
-
-
         [HttpGet(Name = "Get-Customer-By-Id")]
-        public CustomerAccounts GetCustomerByID(Int32 id)
+        public async Task<CustomerAccounts>GetCustomerByID(Int32 id)
         {
             Blc blc = new Blc();
-            return blc.BL_GetCustomerAccountByID(id);
+            return await blc.BL_GetCustomerAccountByID(id);
         }
 
 
@@ -43,10 +41,7 @@ namespace WebApplication1.Controllers
         {
             
             Blc blc = new Blc();
-            if (blc.BL_UpdateCustomerById( id, customerAccount))
-                return Ok();
-            else
-                return BadRequest();
+            return Ok(blc.BL_UpdateCustomerById(id, customerAccount));
         }
 
 
@@ -54,10 +49,8 @@ namespace WebApplication1.Controllers
         public IActionResult AddCustomerAccount(CustomerAccounts customerAccount)
         {
             Blc blc = new Blc();
-            if (blc.BL_AddCustomerAccount(customerAccount))
-                return Ok();
-            else
-                return BadRequest();
+            
+            return Ok(blc.BL_AddCustomerAccount);
         }
 
 
@@ -83,15 +76,64 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost(Name = "add-file")]
-        public IActionResult AddFile(IFormFile document , string filelink)
+        public IActionResult AddFile(IFormFile filse , string medialink , int orderid)
         {
-            DocumentFiles documentFile = new DocumentFiles();
-            documentFile.Document = document;
-            documentFile.FileLink = filelink;
+            
             Blc blc = new Blc();
-            if (blc.AddFile(documentFile)) return Ok();
+            if (blc.AddFile(filse,medialink, orderid)) return Ok();
             else return BadRequest();
             
         }
+        
+        
+
+        [HttpGet(Name ="get-files")]
+        public List<DocumentFiles> GetFiles()
+        {
+            Blc blc = new Blc();
+            List<DocumentFiles> files = blc.GetFiles();
+            return files;
+        }
+        #region please implement your code
+        [HttpGet(Name ="get-file-by-id")]
+        public DocumentFiles GetFileByid(Int32 id)
+        {
+            return new DocumentFiles();
+        }
+
+        [HttpPost(Name = "add-Order")]
+        public IActionResult AddOrder(PrintOrders order)
+        {
+            Blc blc = new();
+            if (blc.BL_AddOrder(order))
+                return Ok();
+            else
+                return BadRequest();
+        }
+        
+        [HttpGet(Name ="get-orders")]
+        public List<PrintOrders> GetOrders()
+        {
+            return new List<PrintOrders>();
+        }
+
+        [HttpGet(Name ="get-order-by-id")]
+        public PrintOrders getOrderById(Int32 id)
+        {
+            return new PrintOrders();
+        }
+
+        [HttpPut(Name ="update-order-by-id")]
+        public IActionResult UpdateOrderById(PrintOrders order, Int32 id)
+        {
+            return BadRequest("add a code");
+        }
+        [HttpDelete(Name ="delete-order-by-id")]
+        public IActionResult DeleteOrderById(Int32 id)
+        {
+            return BadRequest("implement your code ba2a");
+        }
+
+        #endregion
     }
 }

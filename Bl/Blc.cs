@@ -6,17 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Dal;
 using Dal.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace Bl
 {
     public class Blc : IBlc
     {
-        public List<CustomerAccounts> BL_GetCustomerAccounts()
+        
+        public async Task<List<CustomerAccounts>> BL_GetCustomerAccounts()
         {
             Dalc d = new();
-            return d.GetCustomerAccounts();
+            List<CustomerAccounts> c = d.GetCustomerAccounts();
+            return c;
         }
-        public CustomerAccounts BL_GetCustomerAccountByID(Int32 id)
+        public async Task<CustomerAccounts> BL_GetCustomerAccountByID(Int32 id)
         {
             Dalc dalc = new();
             return dalc.GetCustomerAccountByID(id);
@@ -50,11 +54,32 @@ namespace Bl
             return a;
         }
 
-        public bool AddFile(DocumentFiles file)
+        public bool AddFile(IFormFile filess , string medialink,int orderid)
         {
             Dalc dalc = new();
-            file.UploadDate = DateTime.Now;
-            return dalc.AddFile(file);
+            DocumentFiles doc = new();
+            doc.UploadDate = DateTime.Now;
+            doc.FileLink = medialink; //to do: to generate link from cloud service for the IFormFile parameter
+            doc.DocumentName = filess.FileName;
+            doc.FileSize = filess.Length;
+            doc.FileFormat = filess.ContentType;
+            doc.OrderID = orderid;
+            return dalc.AddFile(doc); // to do: please note that if the file link is invalid return false
+        }
+
+        public List<DocumentFiles> GetFiles()
+        {
+            Dalc dalc = new();
+            List<DocumentFiles> files = dalc.GetFiles();
+            return files;
+        }
+
+        public bool BL_AddOrder(PrintOrders order)
+        {
+            Dalc dalc = new();
+            order.OrderedDateTime = DateTime.Now;
+            
+            return dalc.AddOrder(order);
         }
     }
 }
