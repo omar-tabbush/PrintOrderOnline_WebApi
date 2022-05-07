@@ -259,26 +259,147 @@ namespace Dal
             }
         }
 
-                public bool AddOrder(PrintOrders order)
+        public bool AddOrder(PrintOrders order)
+        {
+            SqlParameter[] param = new SqlParameter[]
+            {
+                new SqlParameter("@isBlack", order.isBlack),
+                new SqlParameter("@isHightQuality", order.isHighQuality),
+                new SqlParameter("@isBorderless", order.isBorderless),
+                new SqlParameter("@isDoubleSide", order.isDoubleSide),
+                new SqlParameter("@PaperType", order.PaperType),
+                new SqlParameter("@OrderStatus", order.OrderStatus),
+                new SqlParameter("@WhoOrdered", order.whoOrderedID),
+                new SqlParameter("@OrderedDateTime", order.OrderedDateTime),
+                new SqlParameter("@price", order.Price),
+                new SqlParameter("@size", order.Size),
+            };
+            return SqlDBHelper.ExecuteNonQuery("AddPrintOrders", CommandType.StoredProcedure, param);
+
+        }
+        public bool UpdateOrder(PrintOrders order)
+        {
+
+            if (order == null) return false;
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@OrderID",order.OrderID),
+                new SqlParameter("@isBlack", order.isBlack),
+                new SqlParameter("@isHightQuality",order.isHighQuality),
+                new SqlParameter("@isBorderless",order.isBorderless),
+                new SqlParameter("@size",order.Size),
+                new SqlParameter("@isDoubleSide",order.isDoubleSide),
+                new SqlParameter("@PaperType",order.PaperType),
+                new SqlParameter("@OrderStatus",order.OrderStatus),
+                new SqlParameter("@OrderDateTime",order.OrderedDateTime),
+                new SqlParameter("@price", order.Price),
+                new SqlParameter("@WhoOrdered" , order.whoOrderedID)
+                //new SqlParameter("@CreatedDateTime", customerAccount.CreatedDateTime),
+            };
+
+            return SqlDBHelper.ExecuteNonQuery("UpdatePrinOrderById", CommandType.StoredProcedure, parameter);
+        }
+
+        public PrintOrders GetPrintOrderById(int id)
+        {
+            PrintOrders? order = null;
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@OrderID",id)
+            };
+            using (DataTable table = SqlDBHelper.ExecuteParamerizedSelectCommand("GetPrintOrderById", CommandType.StoredProcedure, parameter))
+            {
+                if (table.Rows.Count > 0)
                 {
-                    SqlParameter[] param = new SqlParameter[]
-                    {
-                        new SqlParameter("@isBlack", order.isBlack),
-                        new SqlParameter("@isHightQuality", order.isHighQuality),
-                        new SqlParameter("@isBorderless", order.isBorderless),
-                        new SqlParameter("@isDoubleSide", order.isDoubleSide),
-                        new SqlParameter("@PaperType", order.PaperType),
-                        new SqlParameter("@OrderStatus", order.OrderStatus),
-                        new SqlParameter("@WhoOrdered", order.whoOrderedID),
-                        new SqlParameter("@OrderedDateTime", order.OrderedDateTime),
-                        new SqlParameter("@price", order.Price),
-                        new SqlParameter("@size", order.Size),
-                    };
-                    return SqlDBHelper.ExecuteNonQuery("AddPrintOrders", CommandType.StoredProcedure, param);
+                    order = new PrintOrders();
+                    DataRow row = table.Rows[0];
+
+                    order.OrderID = Convert.ToInt32(row["OrderID"]);
+                    order.isBlack= getbool(Convert.ToInt32(row["isBlack"]));
+                    order.isHighQuality = getbool(Convert.ToInt32(row["isHightQuality"]));
+                    order.isBorderless= getbool(Convert.ToInt32(row["isBorderless"]));
+                    order.Size= row["Size"].ToString();
+                    order.isDoubleSide= getbool(Convert.ToInt32(row["isDoubleSide"]));
+                    order.PaperType= row["PaperType"].ToString();
+                    order.OrderStatus= row["OrderStatus"].ToString();
+                    order.Price= Convert.ToInt32(row["Price"]);
+                    order.whoOrderedID= Convert.ToInt32(row["WhoOrdered"]);
+                    order.OrderedDateTime = Convert.ToDateTime(row["OrderedDateTime"]);
 
                 }
+            }
+            return order;
+        }
 
+        public List<PrintOrders> GetPrintOrders()
+        {
+            List<PrintOrders>? orders = null;
             
-        
+            using (DataTable table = SqlDBHelper.ExecuteSelectCommand("GetPrintOrders", CommandType.StoredProcedure))
+            {
+                if (table.Rows.Count > 0)
+                {
+                    
+                    foreach (DataRow row in table.Rows)
+                    {
+                        PrintOrders order = new PrintOrders();
+
+                        order.OrderID = Convert.ToInt32(row["OrderID"]);
+                        order.isBlack = getbool(Convert.ToInt32(row["isBlack"]));
+                        order.isHighQuality = getbool(Convert.ToInt32(row["isHightQuality"]));
+                        order.isBorderless = getbool(Convert.ToInt32(row["isBorderless"]));
+                        order.Size = row["Size"].ToString();
+                        order.isDoubleSide = getbool(Convert.ToInt32(row["isDoubleSide"]));
+                        order.PaperType = row["PaperType"].ToString();
+                        order.OrderStatus = row["OrderStatus"].ToString();
+                        order.Price = Convert.ToInt32(row["Price"]);
+                        order.whoOrderedID = Convert.ToInt32(row["WhoOrdered"]);
+                        order.OrderedDateTime = Convert.ToDateTime(row["OrderedDateTime"]);
+
+                        orders.Add(order);
+                    }
+                }
+            }
+            return orders;
+        }
+        public bool DeleteOrder(int id)
+        {
+            SqlParameter[] sp = new SqlParameter[]
+            {
+                new SqlParameter("@OrderID" , id),
+            };
+
+            return SqlDBHelper.ExecuteNonQuery("DeletePrintOrderByID" , CommandType.StoredProcedure, sp);
+        }
+
+        public DocumentFiles GetDocumentById(int id)
+        {
+            DocumentFiles doc = null;
+            SqlParameter param = new SqlParameter("@DocumentFileID", id);
+            using (DataTable table = SqlDBHelper.ExecuteParamerizedSelectCommand("GetDocumentFileByID", CommandType.StoredProcedure, param))
+            {
+                if (table.Rows.Count > 0)
+                {
+                    doc = new DocumentFiles();
+                    DataRow row = table.Rows[0];
+                    doc.DocumentName = row["DocumentFileName"].ToString();
+                    doc.FileSize = Convert.ToInt32(row["FileSize"]);
+                    doc.UploadDate = Convert.ToDateTime(row["UploadDateTime"]);
+                    doc.FileFormat = row["FileFormat"].ToString() ;
+                    doc.FileLink = row["FileLink"].ToString().ToLower() ;
+                    doc.OrderID = Convert.ToInt32(row["OrderID"]);
+                    
+                }
+            }
+            return doc;
+        }
+        public static bool getbool(int bit)
+        {
+            if (bit == 1)
+                return true;
+            else
+                return false;
+        }
+
     }
 }

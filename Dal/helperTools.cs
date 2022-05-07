@@ -20,5 +20,12 @@ namespace Dal
 
             return ms.ToArray();
         }
+        public static bool getbool(int bit)
+        {
+            if (bit == 1)
+                return true;
+            else
+                return false;
+        }
     }
 }

@@ -81,5 +81,32 @@ namespace Bl
             
             return dalc.AddOrder(order);
         }
+
+        public bool UpdateOrder(PrintOrders order)
+        {
+            Dalc dalc = new();
+
+            return dalc.UpdateOrder(order);
+        }
+        public PrintOrders GetPrintOrderById(int id)
+        {
+            Dalc dalc = new();
+            return dalc.GetPrintOrderById(id);
+        }
+        public bool DeleteOrder(int id)
+        {
+            Dalc dalc = new();
+            return (dalc.DeleteOrder(id));
+        }
+        public List<PrintOrders> GetPrintOrders()
+        {
+            Dalc dalc = new();
+            return dalc.GetPrintOrders();
+        }
+        public DocumentFiles GetDocumentById(int id)
+        {
+            Dalc dalc = new();
+            return dalc.GetDocumentById(id);
+        }
     }
 }

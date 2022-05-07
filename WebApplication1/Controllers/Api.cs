@@ -94,11 +94,13 @@ namespace WebApplication1.Controllers
             List<DocumentFiles> files = blc.GetFiles();
             return files;
         }
-        #region please implement your code
+
+
         [HttpGet(Name ="get-file-by-id")]
         public DocumentFiles GetFileByid(Int32 id)
         {
-            return new DocumentFiles();
+            Blc blc = new();
+            return blc.GetDocumentById(id);
         }
 
         [HttpPost(Name = "add-Order")]
@@ -111,29 +113,41 @@ namespace WebApplication1.Controllers
                 return BadRequest();
         }
         
-        [HttpGet(Name ="get-orders")]
-        public List<PrintOrders> GetOrders()
-        {
-            return new List<PrintOrders>();
-        }
-
+        
         [HttpGet(Name ="get-order-by-id")]
         public PrintOrders getOrderById(Int32 id)
         {
-            return new PrintOrders();
+            Blc blc = new();
+            return blc.GetPrintOrderById(id);
         }
 
+
         [HttpPut(Name ="update-order-by-id")]
-        public IActionResult UpdateOrderById(PrintOrders order, Int32 id)
+        public IActionResult UpdateOrderById(PrintOrders order)
         {
-            return BadRequest("add a code");
+            Blc blc = new();
+            return Ok(blc.UpdateOrder(order));
         }
+        
+
         [HttpDelete(Name ="delete-order-by-id")]
         public IActionResult DeleteOrderById(Int32 id)
         {
-            return BadRequest("implement your code ba2a");
+            Blc blc = new();
+            if (blc.DeleteOrder(id))
+                return Ok();
+            else
+                return NotFound();
         }
 
-        #endregion
+
+        [HttpGet(Name = "get-orders")]
+        public List<PrintOrders> GetOrders()
+        {
+            Blc blc = new();
+            return blc.GetPrintOrders();
+        }
+
+
     }
 }

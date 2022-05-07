@@ -23,6 +23,8 @@ namespace Bl
         public List<DocumentFiles> GetFiles();
 
         public bool BL_AddOrder(PrintOrders order);
+        public bool DeleteOrder(int id);
+        public DocumentFiles GetDocumentById(int id);
 
 
 

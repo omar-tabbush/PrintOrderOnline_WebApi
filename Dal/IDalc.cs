@@ -21,6 +21,13 @@ namespace Dal
         public List<DocumentFiles> GetFiles();
 
         public bool AddOrder(PrintOrders order);
+        public bool UpdateOrder(PrintOrders order);
+        public PrintOrders GetPrintOrderById(int id);
+        public bool DeleteOrder(int id);
+        public List<PrintOrders> GetPrintOrders();
+        public DocumentFiles GetDocumentById(int id);
+
+
 
 
     }
