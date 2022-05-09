@@ -21,12 +21,15 @@ namespace WebApplication1.Controllers
             //_blobServiceClient = blobServiceClient;
         }
 
+        #region customers accounts CRUD
+
         [HttpGet(Name = "Get-All-Customers")]
         public async Task<List<CustomerAccounts>> GetCustomersAccounts()
         {
             Blc blc = new Blc();
             return await blc.BL_GetCustomerAccounts();
         }
+
 
         [HttpGet(Name = "Get-Customer-By-Id")]
         public async Task<CustomerAccounts>GetCustomerByID(Int32 id)
@@ -36,7 +39,7 @@ namespace WebApplication1.Controllers
         }
 
 
-        [HttpPut(Name = "Update-By-Id")]
+        [HttpPut(Name = "Update-customer-By-Id")]
         public IActionResult UpdateById(Int32 id,CustomerAccounts customerAccount)
         {
             
@@ -50,7 +53,7 @@ namespace WebApplication1.Controllers
         {
             Blc blc = new Blc();
             
-            return Ok(blc.BL_AddCustomerAccount);
+            return Ok(blc.BL_AddCustomerAccount(customerAccount));
         }
 
 
@@ -64,6 +67,9 @@ namespace WebApplication1.Controllers
                 return BadRequest();
         }
 
+        #endregion
+        
+        #region login?
         [HttpHead(Name ="login")]
         public IActionResult Login(string username, string passw)
         {
@@ -73,8 +79,9 @@ namespace WebApplication1.Controllers
             else
                 return BadRequest();
         }
-
-
+        #endregion
+        
+        #region document files CRD (please add Delete action
         [HttpPost(Name = "add-file")]
         public IActionResult AddFile(IFormFile filse , string medialink , int orderid)
         {
@@ -103,6 +110,9 @@ namespace WebApplication1.Controllers
             return blc.GetDocumentById(id);
         }
 
+        #endregion please add delete action
+        
+        #region orders CRUD
         [HttpPost(Name = "add-Order")]
         public IActionResult AddOrder(PrintOrders order)
         {
@@ -147,6 +157,8 @@ namespace WebApplication1.Controllers
             Blc blc = new();
             return blc.GetPrintOrders();
         }
+        #endregion
+
 
 
     }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Dal;
 using Dal.Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 
 namespace Bl
 {
@@ -38,8 +37,7 @@ namespace Bl
             customerAccount.CreatedDateTime = DateTime.Now;
             return dalc.AddCustomerAccount(customerAccount);
         }
-        //why to use events?
-        // we use event to not to be able to invoke the methode(event) outside the class!
+        
         public bool BL_DeleteCustomerAccountByID(Int32 id)
         {
             Dalc dalc = new();
